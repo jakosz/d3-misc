@@ -16,7 +16,7 @@ svg {
 <body>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="https://raw.githubusercontent.com/jakosz/js-helpers/master/main.js"></script>
+<script src="http://szejda.pl/code/helpers.js"></script>
 <script>
 
 var mainw = 960,
@@ -35,7 +35,8 @@ d3.select('svg').selectAll('tmp')
     .attr('width', '50px')
     .attr('height', '50px')
     .attr('x', function(d){ return d * 55; })
-    .attr('y', 100);
+    .attr('y', 100)
+    .attr('fill', function(d, i){ return ['red', 'green', 'blue'][i]; });
 
 function draggable(){
     
