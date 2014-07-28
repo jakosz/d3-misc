@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<meta charset='utf-8'>
+<style>
+
+body {
+    background: rgb(200,200,200);
+}
+
+svg {
+    margin: auto;
+    display: block;
+    background: white;
+}
+
+</style>
+<body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="testy.js"></script>
+<script>
+
+var mainw = 900,
+    mainh = 550, 
+    mouseOnElement = false,
+    tx = 0, 
+    ty = 0, 
+    x1 = -1, 
+    y1 = -1,
+    x0, y0;
+
+d3.select('body').append('svg')
+    .attr('width', mainw)
+    .attr('height', mainh);
+
+d3.select('svg')
+    .append('g')
+    .attr('transform', 'translate(' + tx + ',' + ty+')')
+    .append('rect')
+    .attr('width', '50px')
+    .attr('height', '50px')
+    .attr('x', 100)
+    .attr('y', 100);
+
+d3.selectAll('g')
+    .on('mousedown', function(){ 
+        mouseOnElement = true; 
+        x0 = d3.event.clientX;
+        y0 = d3.event.clientY;
+    })
+    .on('mouseup', function(){ mouseOnElement = false; })
+    .on('mousemove', function() {
+        if (mouseOnElement) {
+            if (x1 != -1 & y1 != -1) {
+                x0 = x1;
+                y0 = y1;            
+            }
+            x1 = d3.event.clientX; 
+            y1 = d3.event.clientY;
+            tx = tx + (x1 - x0);
+            ty = ty + (y1 - y0);
+            d3.select(this)
+                .attr('transform', 'translate(' + tx + ',' + ty + ')');
+        }
+    });
+
+</script>
+</body>
