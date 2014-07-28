@@ -16,52 +16,69 @@ svg {
 <body>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="testy.js"></script>
+<script src="https://raw.githubusercontent.com/jakosz/js-helpers/master/main.js"></script>
 <script>
 
-var mainw = 900,
-    mainh = 550, 
-    mouseOnElement = false,
-    tx = 0, 
-    ty = 0, 
-    x1 = -1, 
-    y1 = -1,
-    x0, y0;
+var mainw = 960,
+    mainh = 500, 
+    dd = {};        // draggables dict
 
 d3.select('body').append('svg')
     .attr('width', mainw)
     .attr('height', mainh);
 
-d3.select('svg')
+d3.select('svg').selectAll('tmp')
+    .data([1, 2, 3]).enter()
     .append('g')
-    .attr('transform', 'translate(' + tx + ',' + ty+')')
+    .attr('transform', 'translate(0,0)')
     .append('rect')
     .attr('width', '50px')
     .attr('height', '50px')
-    .attr('x', 100)
+    .attr('x', function(d){ return d * 55; })
     .attr('y', 100);
 
-d3.selectAll('g')
-    .on('mousedown', function(){ 
-        mouseOnElement = true; 
-        x0 = d3.event.clientX;
-        y0 = d3.event.clientY;
-    })
-    .on('mouseup', function(){ mouseOnElement = false; })
-    .on('mousemove', function() {
-        if (mouseOnElement) {
-            if (x1 != -1 & y1 != -1) {
-                x0 = x1;
-                y0 = y1;            
-            }
-            x1 = d3.event.clientX; 
-            y1 = d3.event.clientY;
-            tx = tx + (x1 - x0);
-            ty = ty + (y1 - y0);
-            d3.select(this)
-                .attr('transform', 'translate(' + tx + ',' + ty + ')');
-        }
-    });
+function draggable(){
+    
+    var id = 'dd-' + h.randomString();
+    
+    // "Register" the new draggable element:
+    dd[id] = {
+        'on': false,
+        'tx': 0, 
+        'ty': 0, 
+        'x0': null,
+        'x1': null, 
+        'y0': null, 
+        'y1': null
+    }
+    
+    var selection = this instanceof d3.selection ? this : d3.select(this);
+    
+    selection
+        .on('mousedown', function(){ 
+            console.log(id);
+            dd[id].on = true; 
+            dd[id].x0 = d3.event.clientX;
+            dd[id].y0 = d3.event.clientY;
+        })
+        .on('mouseup', function(){ dd[id].on = false; })
+        .on('mousemove', function() {
+            if (dd[id].on) {
+                if (dd[id].x1 != null) {
+                    dd[id].x0 = dd[id].x1;
+                    dd[id].y0 = dd[id].y1;
+                }
+                dd[id].x1 = d3.event.clientX; 
+                dd[id].y1 = d3.event.clientY;
+                dd[id].tx = dd[id].tx + (dd[id].x1 - dd[id].x0);
+                dd[id].ty = dd[id].ty + (dd[id].y1 - dd[id].y0);
+                d3.select(this)
+                    .attr('transform', 'translate(' + dd[id].tx + ',' + dd[id].ty + ')');
+            };
+        });
+}
+
+d3.selectAll('g').each(draggable);
 
 </script>
 </body>
