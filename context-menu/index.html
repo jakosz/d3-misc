@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<meta charset='utf-8'>
+<style>
+
+body {
+    background: rgb(200,200,200);
+}
+
+svg {
+    margin: auto;
+    display: block;
+    background: white;
+}
+
+</style>
+<body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="context-menu.js"></script>
+<script>
+
+var mainw = 900,
+    mainh = 550;
+
+d3.select('body').append('svg').attr('id', 'svg-main')
+    .attr('width', mainw)
+    .attr('height', mainh);
+
+var menu = contextMenu();
+
+d3.select('svg').append('rect')
+    .attr('x', mainw/2 - 30)
+    .attr('y', mainh/2 - 30)
+    .attr('width', 60)
+    .attr('height', 60)
+    .on('contextmenu', function(){ 
+        d3.event.preventDefault();
+        var mainf = document.getElementById('svg-main').getClientRects().item(), 
+            mx = d3.event.clientX - mainf.left, 
+            my = d3.event.clientY - mainf.top;
+        menu(mx, my);
+    });
+</script>
+</body>
