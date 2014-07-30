@@ -1,8 +1,9 @@
 function contextMenu() {
-    var itemHeight = 20,
-        itemWidth, 
-        itemMargin = 10, 
+    var height,
+        width, 
+        margin = 0.1, // fraction of width
         items = [], 
+        rescale = false, 
         style = {
             'rect': {
                 'mouseout': {
@@ -16,26 +17,13 @@ function contextMenu() {
             }, 
             'text': {
                 'fill': 'steelblue', 
-                'font-size': '10'
+                'font-size': '13'
             }
         }; 
     
     function menu(x, y) {
         d3.select('.context-menu').remove();
-
-        // Set itemWidth automatically:
-        d3.select('svg').selectAll('tmp')
-            .data(items).enter()
-            .append('text')
-            .text(function(d){ return d; })
-            .style(style.text)
-            .attr('x', -1000)
-            .attr('y', -1000)
-            .attr('class', 'tmp');
-        var w = d3.selectAll('.tmp')[0]
-                  .map(function(x){ return x.getBBox().width; });
-        itemWidth = d3.max(w) + 2 * itemMargin;
-        d3.selectAll('.tmp').remove();
+        scaleItems();
 
         // Draw the menu
         d3.select('svg')
@@ -43,6 +31,7 @@ function contextMenu() {
             .selectAll('tmp')
             .data(items).enter()
             .append('g').attr('class', 'menu-entry')
+            .style({'cursor': 'pointer'})
             .on('mouseover', function(){ 
                 d3.select(this).select('rect').style(style.rect.mouseover) })
             .on('mouseout', function(){ 
@@ -51,18 +40,18 @@ function contextMenu() {
         d3.selectAll('.menu-entry')
             .append('rect')
             .attr('x', x)
-            .attr('y', function(d, i){ return y + (i * itemHeight); })
-            .attr('width', itemWidth)
-            .attr('height', itemHeight)
+            .attr('y', function(d, i){ return y + (i * height); })
+            .attr('width', width)
+            .attr('height', height)
             .style(style.rect.mouseout);
         
         d3.selectAll('.menu-entry')
             .append('text')
             .text(function(d){ return d; })
             .attr('x', x)
-            .attr('y', function(d, i){ return y + (i * itemHeight); })
-            .attr('dy', itemHeight * .8) // TODO
-            .attr('dx', itemMargin)
+            .attr('y', function(d, i){ return y + (i * height); })
+            .attr('dy', height - margin / 2)
+            .attr('dx', margin)
             .style(style.text);
 
         // Other interactions
@@ -76,13 +65,32 @@ function contextMenu() {
     menu.items = function(e) {
         if (!arguments.length) return items;
         for (i in arguments) items.push(arguments[i]);
+        rescale = true;
         return menu;
     }
-    
-    menu.width = function(x) {
-        if (!arguments.length) return itemWidth;
-        itemWidth = x;
-        return menu;
+
+    // Automatically set width, height, and margin;
+    function scaleItems() {
+        if (rescale) {
+            d3.select('svg').selectAll('tmp')
+                .data(items).enter()
+                .append('text')
+                .text(function(d){ return d; })
+                .style(style.text)
+                .attr('x', -1000)
+                .attr('y', -1000)
+                .attr('class', 'tmp');
+            var z = d3.selectAll('.tmp')[0]
+                      .map(function(x){ return x.getBBox(); });
+            width = d3.max(z.map(function(x){ return x.width; }));
+            margin = margin * width;
+            width =  width + 2 * margin;
+            height = d3.max(z.map(function(x){ return x.height + margin / 2; }));
+            
+            // cleanup
+            d3.selectAll('.tmp').remove();
+            rescale = false;
+        }
     }
 
     return menu;

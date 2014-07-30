@@ -26,7 +26,7 @@ d3.select('body').append('svg').attr('id', 'svg-main')
     .attr('width', mainw)
     .attr('height', mainh);
 
-var menu = contextMenu();
+var menu = contextMenu().items('first item', 'second option', 'whatever, man');
 
 d3.select('svg').append('rect')
     .attr('x', mainw/2 - 30)
@@ -40,5 +40,6 @@ d3.select('svg').append('rect')
             my = d3.event.clientY - mainf.top;
         menu(mx, my);
     });
+
 </script>
 </body>
