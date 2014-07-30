@@ -18,8 +18,8 @@ svg {
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var mainw = 900,
-    mainh = 550;
+var mainw = 960,
+    mainh = 500;
 
 function contextMenu() {
     var height,
@@ -132,10 +132,7 @@ d3.select('svg').append('rect')
     .attr('height', 60)
     .on('contextmenu', function(){ 
         d3.event.preventDefault();
-        var mainf = document.getElementById('svg-main').getClientRects().item(), 
-            mx = d3.event.clientX - mainf.left, 
-            my = d3.event.clientY - mainf.top;
-        menu(mx, my);
+        menu(d3.mouse(this)[0], d3.mouse(this)[1]);
     });
 
 </script>
