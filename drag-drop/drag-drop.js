@@ -1,41 +1,6 @@
-<!DOCTYPE HTML>
-<meta charset='utf-8'>
-<style>
-
-body {
-    background: rgb(200,200,200);
-}
-
-svg {
-    margin: auto;
-    display: block;
-    background: white;
-}
-
-</style>
-<body>
-
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://szejda.pl/code/helpers.js"></script>
-<script>
-
-var mainw = 960,
-    mainh = 500;
-
-d3.select('body').append('svg')
-    .attr('width', mainw)
-    .attr('height', mainh);
-
-d3.select('svg').selectAll('tmp')
-    .data([1, 2, 3]).enter()
-    .append('g')
-    .attr('transform', 'translate(0,0)')
-    .append('rect')
-    .attr('width', '50px')
-    .attr('height', '50px')
-    .attr('x', function(d){ return d * 55; })
-    .attr('y', 100)
-    .attr('fill', function(d, i){ return ['red', 'green', 'blue'][i]; });
+/*
+    Apply this function to a D3 selection to make it draggable.
+*/
 
 function draggable(){
     // Global draggables dict
@@ -81,8 +46,3 @@ function draggable(){
             };
         });
 }
-
-d3.selectAll('g').each(draggable);
-
-</script>
-</body>
